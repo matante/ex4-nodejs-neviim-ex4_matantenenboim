@@ -8,13 +8,14 @@ router.post('/users', function (req, res, next) {
 
     const email = req.body
 
-
-    for (let user of User.fetchAll()){
+    let found = false;
+    for (let user of User.getAllUsers()){
         if (user.email === email){
-            res.json({found: true})
+            found = true;
+            break;
         }
     }
-    res.json({found: false})
+    return res.json({found: found})
 
 });
 
@@ -22,27 +23,19 @@ router.post('/users', function (req, res, next) {
 router.get('/users/:mail', function (req, res, next) {
 
 
-    const email = req.params.mail
+    const email = req.params.mail;
+    let found = false;
 
-    // let user = new User("matante@edu.hac.ac.il",
-    //     "matan",
-    //     "tenen")
-    // user.save()
-    //
-    // console.log(User.fetchAll())
-
-    for (let user of User.fetchAll()){
+    for (let user of User.getAllUsers()){
         if (user.email === email){
-            res.json({found: true})
+            found = true;
+            break;
         }
     }
-    res.json({found: false})
+    return res.json({found: found})
 
 });
-//
-// router.get('/users', function (req, res, next) {
-//
-// });
+
 
 module.exports = router;
 

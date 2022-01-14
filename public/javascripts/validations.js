@@ -119,17 +119,18 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log("bad")
         } else { // succeed
             const email = document.getElementById("email").value.trim();
-            console.log("in else")
 
             fetch(`/api/users/${email}`)
                 .then((res) => {
                     return res.json()
                 }).then((data) => {
-                console.log("before!", data)
                 if (data["found"]) {
                     document.getElementById(`emailInvalid`).classList.remove("d-none");
+                    console.log("didn't submitting")
+
                 } else {
                     document.getElementById(`emailInvalid`).classList.add("d-none");
+                    console.log("before submitting")
                     form.submit()
                 }
             }).catch((d) => {

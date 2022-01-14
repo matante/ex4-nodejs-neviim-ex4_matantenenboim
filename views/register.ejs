@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Exercise 3 - Internet Programming Course Matan Tenenboim</title>
+    <title>Exercise 4 - Internet Programming Course Matan Tenenboim</title>
     <link rel='stylesheet' href='/stylesheets/style.css'/>
 
 
@@ -13,30 +13,17 @@
 
 </head>
 <body>
-<script>
-    // const validateForm = function () {
-    //     console.log("in validate form func")
-    //
-    //     const onlyChars = function (word) {
-    //         return /^[a-zA-Z]+$/.test(word);
-    //     }
-    //
-    //     const form = document.getElementById('inputForm');
-    //     const fName = document.getElementById('fName');
-    //     const lName = document.getElementById('lName');
-    //     const v1 = onlyChars(fName.value.trim())
-    //     const v2 = onlyChars(lName.value.trim())
-    //     return form.checkValidity() && v1 && v2;
-    // }
 
-</script>
 
 <script src="/javascripts/validations.js"></script>
 
 <div class="container">
+    <% if (!filledEmailAndNames) { %>
+
+
     <div class="card">
         <h2 class="card-header bg-success bg-opacity-25">
-            Registration
+            Registration Pt.1
         </h2>
 
 
@@ -73,7 +60,43 @@
             </form>
         </div>
     </div>
+        <% }else{ %>
 
+            <div class="card">
+                <h2 class="card-header bg-success bg-opacity-25">
+                    Registration Pt.2
+                </h2>
+
+
+                <div class="card-body">
+                    <h5 class="card-title">Please choose a password</h5><br>
+
+                    <form class="row g-3 needs-validation" id="inputForm" action="/register" method="post">
+                        <div class="mb-3">
+                            <label for="pass1" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="pass1" name="pass1"
+                                   placeholder="Enter a password" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="pass2" class="form-label">Password </label>
+                            <input type="password" class="form-control" id="pass2" name="pass2" required>
+                        </div>
+                        <div class="text-danger errormessage d-none" id="shortPassword">
+                            Password must be 8 characters!
+                        </div>
+                        <div class="text-danger errormessage d-none" id="notMatchingPassword">
+                            Passwords must match!
+                        </div>
+
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Submit form</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        <%}%>
 </div>
 
 

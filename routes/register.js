@@ -5,40 +5,32 @@ let User = require('../models/User')
 
 router.get('/', function (req, res, next) {
   console.log("i'm in get register")
-  res.render('register');
+  return res.render('register', {filledEmailAndNames : false, data : {}});
 
 });
-
 router.post('/', function (req, res, next) {
-  console.log("i'm in post register")
-
-
   const isExists = function (email){
-    for (const user of User.fetchAll()) {
+    for (const user of User.getAllUsers()) {
       if (user.email === email) {
         return true;
       }
     }
     return false;
   }
-
+  console.log("in post of register")
   const email = req.body.email.trim();
 
-
   const duplicate = isExists(email)
-  if (!duplicate) {
+  if (!duplicate) { // a new user, need to save
     let user = new User(req.body.email.trim(),
         req.body.firstName.trim(),
         req.body.lastName.trim())
     user.save()
-
   }
-  console.log("after", User.fetchAll())
 
-  res.render('register');
-
-
-
+  return res.render('register',
+      {filledEmailAndNames : !duplicate,// a new user -> proceed
+        data : User.getAllUsers()});
 });
 
 

@@ -9,7 +9,7 @@ module.exports = class User {
         db.push(this);
     }
 
-    static fetchAll() {
+    static getAllUsers() {
         return (db);
     }
 };
