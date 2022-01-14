@@ -1,31 +1,16 @@
+/**
+ * this handles all the request for information from the api
+ */
+
+"use strict";
 var express = require('express');
 var router = express.Router();
 const db = require('../models'); //contain the User model, which is accessible via db.User
-const keys = ['dragon leaf'];
-
-//todo : delete, not for actual use, only debug!
-router.get('/users', (req, res) => {
-    return db.User.findAll()
-        .then((users) => res.send(users))
-        .catch((err) => {
-            console.log('There was an error querying contacts', JSON.stringify(err))
-            err.error = 1; // some error code for client side
-            return res.send(err)
-        });
-});
-
-//todo : delete, not for actual use, only debug!
-router.get('/findAllImages', (req, res) => {
-    return db.Image.findAll()
-        .then((images) => res.send(images))
-        .catch((err) => {
-            console.log('There was an error querying contacts', JSON.stringify(err))
-            err.error = 1; // some error code for client side
-            return res.send(err)
-        });
-});
 
 
+/**
+ * returns the images related to this user, id-ed by email
+ */
 router.get('/images', async function (req, res) {
 
     if (req.session.email) {
@@ -33,17 +18,19 @@ router.get('/images', async function (req, res) {
             where: {
                 email: req.session.email
             }
-        })
-        if (result)
-            return res.json(result);
-        else
-            return res.json(null);
+        });
+        return (result) ? res.json(result) : res.json(null);
+
     } else {
-        return res.status(404).send()
+        return res.status(404).send();
     }
 
 });
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ * handles requests to delete a specific photo of a user from the db
+ */
 router.delete('/images', async function (req, res) {
     if (req.session.email) {
         db.Image.destroy({
@@ -52,48 +39,52 @@ router.delete('/images', async function (req, res) {
                 imageID: req.body.id
             }
         })
-            .then(res.status(200).send())
+            .then(res.status(200).send());
     } else {
-        return res.status(404).send()
+        return res.status(404).send();
     }
-})
-
+});
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ * handles reuqests to delete ALL photos of a user from the db
+ */
 router.delete('/images/all', async function (req, res) {
     if (req.session.email) {
         db.Image.destroy({
             where: {email: req.session.email}
         })
-            .then(res.status(200).send())
+            .then(res.status(200).send());
     } else {
-        return res.status(404).send()
+        return res.status(404).send();
     }
-})
+});
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ * handles requests to check if a specific email is already registered to this site
+ */
 router.get('/users/:email', function (req, res) {
     if (req.session.email) {
-        const email = req.params.email.toLowerCase();
+        const email = req.params.email.trim().toLowerCase();
 
         db.User.findOne({
             where: {email: email},
         }).then(user => {
-            if (!user) {
-                return res.json({found: false});
-            }
-            return res.json({found: true});
+            return (!user) ? res.json({found: false}) : res.json({found: true});
 
         }).catch(() => {
             return res.json({found: true}); // in case of error, don't add
         });
     } else {
-        return res.status(404).send()
+        return res.status(404).send();
     }
 });
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-router.get('/images', function (req, res) {
-    return res.redirect("/");
-});
 
+/**
+ * handles requests to add a photo to the db
+ */
 router.post('/images', function (req, res) {
 
     if (req.session.email) {
@@ -110,18 +101,20 @@ router.post('/images', function (req, res) {
             .then((image) => {
                 return res.json(image);
             })
-            .catch((err) => {
-                console.log('*** error creating a user', JSON.stringify(image))
-                return res.status(400).send(err)
-            })
+            .catch((err, image) => {
+                console.log('*** error creating a user', JSON.stringify(image));
+                return res.status(400).send(err);
+            });
     } else {
-
-        return res.status(404).send()
+        return res.status(404).send();
     }
 
 });
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/**
+ * handles requests to check if the user already saved a specific photo
+ */
 router.get('/images/:id', async function (req, res) {
 
     if (req.session.email) {
@@ -130,15 +123,11 @@ router.get('/images/:id', async function (req, res) {
                 imageID: req.params.id,
                 email: req.session.email
             }
-        })
-        if (result[0])
-            return res.json({found: true});
-        else
-            return res.json({found: false});
+        });
+        return (result[0]) ? res.json({found: true}) : res.json({found: false});
+
     } else {
-
-        return res.status(404).send()
-
+        return res.status(404).send();
     }
 
 });
