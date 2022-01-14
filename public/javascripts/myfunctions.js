@@ -617,6 +617,17 @@ const APIKEY = "GlDtOhfxcpLXGEcCNa7VXgCchnlAJXIpFigptnse";
     })();
 
 
+    const resetView = async function(){
+        PhotosModule.getOldPhotos()
+            .then((res) => {
+                return res.json()
+            }).then((photos) => {
+            PhotosModule.addPhotosToList(photos)
+            PhotosModule.addPhotoToCarousel(photos)
+            PhotosModule.refreshDeleteButtons();
+        })
+    }
+
     document.addEventListener('DOMContentLoaded', (event) => { // wait for page to load
 
 
@@ -677,6 +688,8 @@ const APIKEY = "GlDtOhfxcpLXGEcCNa7VXgCchnlAJXIpFigptnse";
                 .then(() => {
                     let empty = document.getElementById("empty")// = "";
                     empty.innerHTML = Messages.NoSaved
+                    resetView()
+
                 })
                 .catch((e) => {
                     window.location.replace('/');
@@ -685,13 +698,7 @@ const APIKEY = "GlDtOhfxcpLXGEcCNa7VXgCchnlAJXIpFigptnse";
     });
 
 
-    PhotosModule.getOldPhotos()
-        .then((res) => {
-            return res.json()
-        }).then((photos) => {
-        PhotosModule.addPhotosToList(photos)
-        PhotosModule.addPhotoToCarousel(photos)
-        PhotosModule.refreshDeleteButtons();
-    })
+
+    resetView()
 
 })();
